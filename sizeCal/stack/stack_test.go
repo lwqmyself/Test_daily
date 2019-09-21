@@ -1,6 +1,9 @@
 package stack
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 var stack ItemStack
 
@@ -24,7 +27,8 @@ func TestPush(t *testing.T) {
 }
 
 func TestPop(t *testing.T) {
-	stack.Pop()
+	it := stack.Pop()
+	fmt.Println(it.(string))
 	if size := len(stack.items); size != 2 {
 		t.Errorf("Wrong stack size, expected 2 and got %d", size)
 	}

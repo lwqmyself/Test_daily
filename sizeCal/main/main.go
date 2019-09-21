@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Test_daily/sizeCal/stack"
+	"Test_daily_2333/sizeCal/stack"
 	"bufio"
 	"fmt"
 	"os"
@@ -33,8 +33,8 @@ func calculate(postfix []string) int {
 			stack.Push(nextChar)
 		} else {
 			// 操作符：取出两个数字计算值，再将结果压栈
-			num1, _ := strconv.Atoi(stack.Pop())
-			num2, _ := strconv.Atoi(stack.Pop())
+			num1, _ := strconv.Atoi(stack.Pop().(string))
+			num2, _ := strconv.Atoi(stack.Pop().(string))
 			fmt.Println(num2, num1, nextChar)
 			switch nextChar {
 			case "+":
@@ -48,20 +48,20 @@ func calculate(postfix []string) int {
 			}
 		}
 	}
-	result, _ := strconv.Atoi(stack.Top())
+	result, _ := strconv.Atoi(stack.Top().(string))
 	return result
 }
 
 func infix2ToPostfix(exp string) []string {
 	stack := stack.ItemStack{}
-	postfix := []string{}
+	var postfix []string
 	expLen := len(exp)
 
 	// 遍历整个表达式
 	for i := 0; i < expLen; i++ {
 
 		char := string(exp[i])
-
+		stack.Show()
 		switch char {
 		case " ":
 			continue
@@ -71,12 +71,15 @@ func infix2ToPostfix(exp string) []string {
 		case ")":
 			// 右括号则弹出元素直到遇到左括号
 			for !stack.IsEmpty() {
-				preChar := stack.Top()
+				//取栈顶
+				preChar := stack.Top().(string)
 				if preChar == "(" {
 					stack.Pop() // 弹出 "("
 					break
 				}
+				//加入切片
 				postfix = append(postfix, preChar)
+				//弹出
 				stack.Pop()
 			}
 
@@ -94,11 +97,14 @@ func infix2ToPostfix(exp string) []string {
 		default:
 			// 操作符：遇到高优先级的运算符，不断弹出，直到遇见更低优先级运算符
 			for !stack.IsEmpty() {
-				top := stack.Top()
+				top := stack.Top().(string)
+
 				if top == "(" || isLower(top, char) {
+					fmt.Println(isLower(top, char))
 					break
 				}
 				postfix = append(postfix, top)
+				fmt.Println(postfix)
 				stack.Pop()
 			}
 			// 低优先级的运算符入栈
@@ -108,7 +114,8 @@ func infix2ToPostfix(exp string) []string {
 
 	// 栈不空则全部输出
 	for !stack.IsEmpty() {
-		postfix = append(postfix, stack.Pop())
+		postfix = append(postfix, stack.Pop().(string))
+		fmt.Println(postfix)
 	}
 
 	return postfix

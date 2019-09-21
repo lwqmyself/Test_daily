@@ -1,19 +1,20 @@
 package stack
 
 import (
+	"fmt"
 	"sync"
 )
 
 type Item string
 
 type ItemStack struct {
-	items []string
+	items []interface{}
 	lock  sync.RWMutex
 }
 
 // 创建栈
 func (s *ItemStack) New() *ItemStack {
-	s.items = []string{}
+	s.items = make([]interface{}, 0)
 	return s
 }
 
@@ -25,7 +26,7 @@ func (s *ItemStack) Push(t string) {
 }
 
 // 出栈
-func (s *ItemStack) Pop() string {
+func (s *ItemStack) Pop() interface{} {
 	s.lock.Lock()
 	item := s.items[len(s.items)-1]
 	s.items = s.items[0 : len(s.items)-1]
@@ -34,11 +35,14 @@ func (s *ItemStack) Pop() string {
 }
 
 // 取栈顶
-func (s *ItemStack) Top() string {
+func (s *ItemStack) Top() interface{} {
 	return s.items[len(s.items)-1]
 }
 
 // 判空
 func (s *ItemStack) IsEmpty() bool {
 	return len(s.items) == 0
+}
+func (s *ItemStack) Show() {
+	fmt.Println(s.items)
 }
